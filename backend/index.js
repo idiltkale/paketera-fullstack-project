@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -7,7 +6,6 @@ const { Pool } = require('pg');
 
 const app = express();
 const port = process.env.PORT || 3001;
-
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -23,8 +21,6 @@ const pool = new Pool({
   }
 });
 
-
-// Health check
 app.get('/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
@@ -34,16 +30,17 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// Get all users
 app.get('/users', async (req, res) => {
   const result = await pool.query('SELECT id, username, role FROM users');
   res.json(result.rows);
 });
 
-// Login endpoint
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const result = await pool.query('SELECT * FROM users WHERE username=$1 AND password=$2', [username, password]);
+  const result = await pool.query(
+    'SELECT * FROM users WHERE username=$1 AND password=$2',
+    [username, password]
+  );
   if (result.rows.length > 0) {
     const user = result.rows[0];
     res.json({ username: user.username, role: user.role });
@@ -52,42 +49,37 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Get all product types
 app.get('/product-types', async (req, res) => {
   const result = await pool.query('SELECT * FROM product_types');
   res.json(result.rows);
 });
 
-// Add new product type
 app.post('/product-types', async (req, res) => {
   const { name } = req.body;
   await pool.query('INSERT INTO product_types(name) VALUES($1)', [name]);
   res.status(201).send('Product type added');
 });
 
-// Get all orders
 app.get('/orders', async (req, res) => {
-  const result = await pool.query(
-    `SELECT o.id, u.username AS customer, o.created_at, 
-     json_agg(json_build_object('type', pt.name, 'quantity', oi.quantity)) AS products,
-     (SELECT json_agg(u2.username) 
-      FROM supplier_responses sr 
-      JOIN users u2 ON sr.supplier_id = u2.id 
-      WHERE sr.order_id = o.id AND sr.status = 'interested') AS interested_suppliers
-     FROM orders o
-     JOIN users u ON o.customer_id = u.id
-     JOIN order_items oi ON oi.order_id = o.id
-     JOIN product_types pt ON oi.product_type_id = pt.id
-     GROUP BY o.id, u.username, o.created_at
-     ORDER BY o.id`
-  );
+  const result = await pool.query(`
+    SELECT o.id, u.username AS customer, o.created_at, 
+           json_agg(json_build_object('type', pt.name, 'quantity', oi.quantity)) AS products,
+           (SELECT json_agg(u2.username) 
+            FROM supplier_responses sr 
+            JOIN users u2 ON sr.supplier_id = u2.id 
+            WHERE sr.order_id = o.id AND sr.status = 'interested') AS interested_suppliers
+    FROM orders o
+    JOIN users u ON o.customer_id = u.id
+    JOIN order_items oi ON oi.order_id = o.id
+    JOIN product_types pt ON oi.product_type_id = pt.id
+    GROUP BY o.id, u.username, o.created_at
+    ORDER BY o.id
+  `);
   res.json(result.rows);
 });
 
-// Add new order
 app.post('/orders', async (req, res) => {
   const { customerUsername, products } = req.body;
-
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -119,7 +111,6 @@ app.post('/orders', async (req, res) => {
   }
 });
 
-// Supplier marks interest
 app.post('/orders/:orderId/supplier-response', async (req, res) => {
   const { supplierUsername, interested } = req.body;
   const { orderId } = req.params;
@@ -127,12 +118,11 @@ app.post('/orders/:orderId/supplier-response', async (req, res) => {
   const supplierResult = await pool.query('SELECT id FROM users WHERE username=$1', [supplierUsername]);
   const supplierId = supplierResult.rows[0].id;
 
-  await pool.query(
-    `INSERT INTO supplier_responses(order_id, supplier_id, status)
-     VALUES($1, $2, $3)
-     ON CONFLICT (order_id, supplier_id) DO UPDATE SET status = EXCLUDED.status`,
-    [orderId, supplierId, interested ? 'interested' : 'not_interested']
-  );
+  await pool.query(`
+    INSERT INTO supplier_responses(order_id, supplier_id, status)
+    VALUES($1, $2, $3)
+    ON CONFLICT (order_id, supplier_id) DO UPDATE SET status = EXCLUDED.status
+  `, [orderId, supplierId, interested ? 'interested' : 'not_interested']);
 
   res.send('Response recorded');
 });
