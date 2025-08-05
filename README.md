@@ -1,68 +1,79 @@
-# Paketera Fullstack Project
+# Paketera Full-stack Project
 
-This is a full-stack web app developed for the Paketera Full-stack Entry Project.  
-The project includes admin, customer, and supplier roles with basic order management features.
+This is a full-stack web application developed as part of the Paketera Junior Full-Stack Developer evaluation project. It allows users to log in as Admin, Customer, or Supplier and manage product orders and interests accordingly.
 
----
-## Technologies
+## 🚀 Technologies Used
 
-- Frontend: React (Vite), TailwindCSS
-- Backend: Node.js, Express
-- Database: PostgreSQL
-- API: RESTful
-- Auth: Simple username/password check (no JWT)
+### Frontend
+- React (with Vite)
+- Tailwind CSS
+- React Hooks
 
----
-## Features
+### Backend
+- Node.js
+- Express.js
+- PostgreSQL (deployed on Render)
 
-### Login
-You can log in with the following test users:
-
-| Username | Password | Role      |
-|----------|----------|-----------|
-| admin    | 111      | admin     |
-| selen    | 111      | customer  |
-| burak    | 111      | customer  |
-| idil     | 111      | supplier  |
-| şafak    | 111      | supplier  |
+### Deployment
+- Frontend deployed on Vercel → [View Live](https://paketera-fullstack-project.vercel.app)
+- Backend deployed on Render → [API Base URL](https://paketera-fullstack-project.onrender.com)
 
 ---
+
+## 👤 User Roles
+
 ### Admin
-- See all users (except admin)
+- View all users (except admin)
 - View all orders
-- See which suppliers are interested
+- See which suppliers are interested in which orders
 - Add new product types
 
 ### Customer
-- View available product types
-- Create orders
-- View your own orders and supplier interest (names masked)
+- View product types
+- Create orders with one or more product types
+- View their own orders and see interested suppliers (name-masked)
 
 ### Supplier
-- See all orders
-- Filter orders by product type
-- Mark orders as interested or not interested
+- Filter and view orders by product type
+- Mark orders as "Interested ✅" or "Not Interested ❌"
 
 ---
-## Run the project locally
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/idiltkale/paketera-fullstack-project.git
-   cd paketera-fullstack-project
-Set up the backend:
+## ⚙️ Local Development
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/idiltkale/paketera-fullstack-project.git
+cd paketera-fullstack-project
+2. Setup Backend
 cd backend
 npm install
-Create a .env file in the backend folder:
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_NAME=paketeraDatabase
-Start backend:
+Create a .env file:
+DATABASE_URL=postgresql://<your_postgres_credentials>
+Then run:
 node index.js
-Set up and run the frontend:
-cd ../frontend
+3. Setup Frontend
+cd frontend
 npm install
 npm run dev
-Open http://localhost:5173 in your browser.
+🧪 Default Test Users
+Admin
+Username: admin
+Password: admin
+Supplier
+Username: selen
+Password: 111
+Customer
+Username: idil
+Password: 123
+📂 Project Structure
+paketera-fullstack-project/
+├── backend/      # Node.js + Express API
+├── frontend/     # React + Vite + Tailwind UI
+└── README.md
+✅ Features Completed
+ CRUD operations for orders and product types
+ Role-based UI for Admin, Supplier, and Customer
+ Responsive and functional UI with Tailwind
+ Live deployment with Vercel & Render
