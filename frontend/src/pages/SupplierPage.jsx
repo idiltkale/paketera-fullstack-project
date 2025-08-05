@@ -6,17 +6,17 @@ function SupplierPage({ user }) {
   const [productTypes, setProductTypes] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/orders")
-      .then((res) => res.json())
+    fetch("https://paketera-fullstack-project.onrender.com/orders")
+    .then((res) => res.json())
       .then((data) => setOrders(data));
 
-    fetch("http://localhost:3001/product-types")
+      fetch("https://paketera-fullstack-project.onrender.com/product-types")
       .then((res) => res.json())
       .then((data) => setProductTypes(data));
   }, []);
 
   const handleInterest = async (orderId, interested) => {
-    await fetch(`http://localhost:3001/orders/${orderId}/supplier-response`, {
+    await fetch(`https://paketera-fullstack-project.onrender.com/orders/${orderId}/supplier-response`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -24,8 +24,8 @@ function SupplierPage({ user }) {
         interested: interested,
       }),
     });
+    const updated = await fetch("https://paketera-fullstack-project.onrender.com/orders").then((res) => res.json());
 
-    const updated = await fetch("http://localhost:3001/orders").then((res) => res.json());
     setOrders(updated);
   };
 
