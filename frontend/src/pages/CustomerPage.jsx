@@ -42,10 +42,12 @@ function CustomerPage({ user }) {
     });
 
     if (res.ok) {
-      const updated = await fetch("https://paketera-fullstack-project.onrender.com/orders")
-      setOrders(updated);
+      const updatedResponse = await fetch("https://paketera-fullstack-project.onrender.com/orders");
+      const updatedData = await updatedResponse.json();  
+      setOrders(updatedData);  
       setNewOrder({});
     }
+    
   };
 
   const maskName = (name) => {
