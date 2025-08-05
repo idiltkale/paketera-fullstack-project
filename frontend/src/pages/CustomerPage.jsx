@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
 
-
 function CustomerPage({ user }) {
   const [productTypes, setProductTypes] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -9,12 +8,12 @@ function CustomerPage({ user }) {
 
   useEffect(() => {
     fetch("https://paketera-fullstack-project.onrender.com/product-types")
-    .then((res) => res.json())
+      .then((res) => res.json())
       .then((data) => setProductTypes(data));
 
-      fetch("https://paketera-fullstack-project.onrender.com/orders")
+    fetch("https://paketera-fullstack-project.onrender.com/orders")
       .then((res) => res.json())
-      .then((data) => setOrders(data));
+      .then((data) => setOrders(Array.isArray(data) ? data : []));
   }, []);
 
   const handleQuantityChange = (type, value) => {
@@ -35,7 +34,6 @@ function CustomerPage({ user }) {
     };
 
     const res = await fetch("https://paketera-fullstack-project.onrender.com/orders", {
-
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
@@ -43,11 +41,10 @@ function CustomerPage({ user }) {
 
     if (res.ok) {
       const updatedResponse = await fetch("https://paketera-fullstack-project.onrender.com/orders");
-      const updatedData = await updatedResponse.json();  
-      setOrders(updatedData);  
+      const updatedData = await updatedResponse.json();
+      setOrders(Array.isArray(updatedData) ? updatedData : []);
       setNewOrder({});
     }
-    
   };
 
   const maskName = (name) => {
@@ -92,7 +89,9 @@ function CustomerPage({ user }) {
               <p className="font-semibold">Products:</p>
               <ul className="list-disc list-inside ml-4">
                 {order.products.map((p, i) => (
-                  <li key={i}>{p.type}: {p.quantity}</li>
+                  <li key={i}>
+                    {p.type}: {p.quantity}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -100,9 +99,7 @@ function CustomerPage({ user }) {
               <p className="font-semibold">Interested Suppliers:</p>
               <ul className="list-disc list-inside ml-4">
                 {order.interested_suppliers && order.interested_suppliers.length > 0 ? (
-                  order.interested_suppliers.map((s, i) => (
-                    <li key={i}>{maskName(s)}</li>
-                  ))
+                  order.interested_suppliers.map((s, i) => <li key={i}>{maskName(s)}</li>)
                 ) : (
                   <li>None yet</li>
                 )}
