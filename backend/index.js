@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -17,7 +18,11 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 // Health check
 app.get('/health', async (req, res) => {
