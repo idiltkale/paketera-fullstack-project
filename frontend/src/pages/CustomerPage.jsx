@@ -8,11 +8,11 @@ function CustomerPage({ user }) {
   const [newOrder, setNewOrder] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:3001/product-types")
-      .then((res) => res.json())
+    fetch("https://paketera-fullstack-project.onrender.com/product-types")
+    .then((res) => res.json())
       .then((data) => setProductTypes(data));
 
-    fetch("http://localhost:3001/orders")
+      fetch("https://paketera-fullstack-project.onrender.com/orders")
       .then((res) => res.json())
       .then((data) => setOrders(data));
   }, []);
@@ -34,14 +34,15 @@ function CustomerPage({ user }) {
       products: Object.fromEntries(nonZeroProducts),
     };
 
-    const res = await fetch("http://localhost:3001/orders", {
+    const res = await fetch("https://paketera-fullstack-project.onrender.com/orders", {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
     });
 
     if (res.ok) {
-      const updated = await fetch("http://localhost:3001/orders").then((res) => res.json());
+      const updated = await fetch("https://paketera-fullstack-project.onrender.com/orders")
       setOrders(updated);
       setNewOrder({});
     }

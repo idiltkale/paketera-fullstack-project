@@ -7,15 +7,17 @@ function AdminPage() {
   const [newType, setNewType] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3001/users")
+    fetch("https://paketera-fullstack-project.onrender.com/users")
+
       .then((res) => res.json())
       .then((data) => setUsers(data));
 
-    fetch("http://localhost:3001/orders")
+      fetch("https://paketera-fullstack-project.onrender.com/orders")
+
       .then((res) => res.json())
       .then((data) => setOrders(data));
 
-    fetch("http://localhost:3001/product-types")
+      fetch("https://paketera-fullstack-project.onrender.com/product-types")
       .then((res) => res.json())
       .then((data) => setProductTypes(data));
   }, []);
@@ -23,7 +25,7 @@ function AdminPage() {
   const handleAddType = () => {
     if (newType.trim() === "" || productTypes.find((pt) => pt.name === newType)) return;
 
-    fetch("http://localhost:3001/product-types", {
+    fetch("https://paketera-fullstack-project.onrender.com/product-types", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: newType }),
